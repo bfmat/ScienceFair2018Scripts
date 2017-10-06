@@ -16,7 +16,8 @@ SUBFOLDER_NAMES = ('before', 'after')
 
 # Verify that the number of command line arguments is correct
 if len(sys.argv) != 3:
-    print('Usage: {} <image folder> <threshold Unix time>')
+    print('Usage: {} <image folder> <threshold Unix time>'.format(sys.argv[0]))
+    sys.exit()
 
 # Get a folder from the first command line argument
 folder = os.path.expanduser(sys.argv[1])
