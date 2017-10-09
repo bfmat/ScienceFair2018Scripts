@@ -6,7 +6,7 @@ import shutil
 
 
 # A simple script to copy items in a folder into one of two subfolders,
-# depending on whether they were created before or after a given time.
+# depending on whether they were created before or after a given time
 # Created by brendon-ai, September 2017
 
 
