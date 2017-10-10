@@ -50,7 +50,7 @@ timestamps_with_errors = zip(timestamps, errors)
 timestamps_with_errors_sorted = sorted(timestamps_with_errors, key=lambda timestamp_and_error: timestamp_and_error[0])
 
 # Split them into two lists once again
-timestamps_with_errors_unzipped = zip(*timestamps_with_errors_sorted)
+timestamps_with_errors_unzipped = list(zip(*timestamps_with_errors_sorted))
 timestamps_sorted = timestamps_with_errors_unzipped[0]
 errors_sorted = timestamps_with_errors_unzipped[1]
 
@@ -59,7 +59,7 @@ total_delta_time = 0
 total_squared_derivative_error = 0
 
 # Iterate over the sorted timestamps and errors
-for i in range(1, len(timestamps_with_errors)):
+for i in range(1, len(timestamps_with_errors_sorted)):
 
     # Get the indices for the current iteration and the previous one
     current_iteration = i
