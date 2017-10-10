@@ -57,7 +57,6 @@ errors_sorted = timestamps_with_errors_unzipped[1]
 # Add up the time deltas and the squared derivatives while iterating
 total_delta_time = 0
 total_squared_derivative_error = 0
-print(timestamps_sorted)
 
 # Iterate over the sorted timestamps and errors
 for i in range(1, len(timestamps_with_errors)):
