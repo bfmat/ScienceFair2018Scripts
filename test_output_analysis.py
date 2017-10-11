@@ -55,7 +55,6 @@ timestamps_sorted = timestamps_with_errors_unzipped[0]
 errors_sorted = timestamps_with_errors_unzipped[1]
 
 # Add up the time deltas and the squared derivatives while iterating
-total_delta_time = 0
 total_squared_derivative_error = 0
 
 # Iterate over the sorted timestamps and errors
@@ -65,11 +64,8 @@ for i in range(1, len(timestamps_with_errors_sorted)):
     current_iteration = i
     previous_iteration = i - 1
 
-    # Calculate the delta between the current timestamp and the last and add it to the total
-    delta_time = timestamps_sorted[current_iteration] - timestamps_sorted[previous_iteration]
-    total_delta_time += delta_time
-
     # Calculate the approximate derivative of the error with respect to time at this point
+    delta_time = timestamps_sorted[current_iteration] - timestamps_sorted[previous_iteration]
     delta_error = errors_sorted[current_iteration] - errors_sorted[previous_iteration]
     derivative_error = delta_error / delta_time
 
@@ -84,6 +80,7 @@ num_files = len(file_names)
 num_iterations = num_files - 1
 
 # Calculate and print the average frame time
+total_delta_time = timestamps_sorted[-1] - timestamps_sorted[0]
 average_frame_time = total_delta_time / num_iterations
 print('Average frame time over', num_iterations, 'iterations:', average_frame_time)
 
