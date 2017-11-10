@@ -1,9 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
-import sys
 import shutil
-
+import sys
 
 # A simple script to copy items in a folder into one of two subfolders,
 # depending on whether they were created before or after a given time
@@ -12,7 +11,6 @@ import shutil
 
 # Names of directories to move files into
 SUBFOLDER_NAMES = ('before', 'after')
-
 
 # Verify that the number of command line arguments is correct
 if len(sys.argv) != 3:
@@ -59,4 +57,3 @@ for file_name in os.listdir(folder):
         # Otherwise copy it to the after subfolder
         else:
             shutil.copy(file_path, subfolders[1])
-

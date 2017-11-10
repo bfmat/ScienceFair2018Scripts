@@ -1,11 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from __future__ import print_function
 
+import math
 import os
 import sys
-import math
-
 
 # A script for analyzing output data from an autonomous vehicle, including calculating the standard deviation from the
 # road line based on the file names, the average time elapsed per frame based on the timestamps of the files, and
@@ -16,7 +15,6 @@ import math
 if len(sys.argv) != 2:
     print('Usage:', sys.argv[0], '<image folder>')
     sys.exit()
-
 
 # First, get all of the timestamps and errors from the file names and metadata
 # Parse the provided folder path
@@ -29,7 +27,6 @@ errors = []
 # Iterate over all of the image names in the folder
 file_names = os.listdir(folder)
 for file_name in file_names:
-
     # Get the part of the file name after the word 'error'
     file_name_end = file_name.split('error')[1]
 
@@ -42,7 +39,6 @@ for file_name in file_names:
     # Get the timestamp of the file and add it to the list
     timestamp = os.path.getmtime('{}/{}'.format(folder, file_name))
     timestamps.append(timestamp)
-
 
 # Next task is to compute the average frame time and geometric mean of the approximate derivative of the error
 # Sort the timestamps so they are iterated over, and keep them in order with the corresponding errors
@@ -59,7 +55,6 @@ total_squared_derivative_error = 0
 
 # Iterate over the sorted timestamps and errors
 for i in range(1, len(timestamps_with_errors_sorted)):
-
     # Get the indices for the current iteration and the previous one
     current_iteration = i
     previous_iteration = i - 1
@@ -72,7 +67,6 @@ for i in range(1, len(timestamps_with_errors_sorted)):
     # Add the square of the derivative to the total
     squared_derivative_error = derivative_error ** 2
     total_squared_derivative_error += squared_derivative_error
-
 
 # Perform final calculations and print out all of the results
 # Get the number of files there are in the list and the number of iterations involved in the derivative calculation
