@@ -1,23 +1,22 @@
-from __future__ import print_function
+#!/usr/bin/env python3
 
 import os
+import random
 import sys
 import uuid
-import random
 
-from scipy.misc import imread, imsave
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtWidgets import QLabel, QWidget, QApplication
+from skimage.io import imread, imsave
 
 # Program which allows a user to select the position of a road line in a wide image
 # in order to create training data for a convolutional neural network
 # Created by brendon-ai, September 2017
 
 
-# Dimensions of window as well as image
-WINDOW_WIDTH = 3840
-WINDOW_HEIGHT = 840
+# Width of the window
+WINDOW_WIDTH = 1200
 
 # Height of output training images (width is assumed to be the same as that of the input images)
 OUTPUT_HEIGHT = 16
@@ -25,6 +24,9 @@ OUTPUT_HEIGHT = 16
 
 # Main PyQt5 QWidget class
 class ManualSelection(QWidget):
+    # Height of the window, calculated when the UI is set up
+    window_height = None
+
     # The label that displays the current image
     image_box = None
 
@@ -58,21 +60,30 @@ class ManualSelection(QWidget):
         image_folder = os.path.expanduser(sys.argv[1])
         self.image_paths = get_image_paths(image_folder)
 
-        # Set up the UI
+        # Get the height and width of the first image in order to calculate the aspect ratio
+        image_height, image_width = imread(self.image_paths[0]).shape[:2]
+
+        # Calculate the scale of the window compared to the image
+        window_scale = WINDOW_WIDTH / image_width
+
+        # Multiply the image height by the scale to get the window height
+        self.window_height = image_height * window_scale
+
+        # Set up the UI using the predefined width and computed height of the window
         self.init_ui()
 
     # Initialize the user interface
     def init_ui(self):
 
         # Set the size, position, title, and color scheme of the window
-        self.setFixedSize(WINDOW_WIDTH, WINDOW_HEIGHT)
+        self.setFixedSize(WINDOW_WIDTH, self.window_height)
         self.move(100, 100)
         self.setWindowTitle('Manual Training Data Selection')
 
         # Initialize the image box that holds the video frames
         self.image_box = QLabel(self)
         self.image_box.setAlignment(Qt.AlignCenter)
-        self.image_box.setFixedSize(WINDOW_WIDTH, WINDOW_HEIGHT)
+        self.image_box.setFixedSize(WINDOW_WIDTH, self.window_height)
         self.image_box.move(0, 0)
 
         # Make the window exist
@@ -121,7 +132,7 @@ class ManualSelection(QWidget):
         height, width, channel = self.current_image.shape
         bytes_per_line = channel * width
         current_image_qimage = QImage(self.current_image.data, width, height, bytes_per_line, QImage.Format_RGB888)
-        current_image_qpixmap = QPixmap(current_image_qimage).scaled(WINDOW_WIDTH, WINDOW_HEIGHT)
+        current_image_qpixmap = QPixmap(current_image_qimage).scaled(WINDOW_WIDTH, self.window_height)
 
         # Set the image scaling factor to the window width divided by the image width
         # This must be an integer for everything to work properly
