@@ -75,9 +75,8 @@ class ManualSelection(QWidget):
     # Initialize the user interface
     def init_ui(self):
 
-        # Set the size, position, title, and color scheme of the window
+        # Set the size, title, and color scheme of the window
         self.setFixedSize(WINDOW_WIDTH, self.window_height)
-        self.move(100, 100)
         self.setWindowTitle('Manual Training Data Selection')
 
         # Initialize the image box that holds the video frames
