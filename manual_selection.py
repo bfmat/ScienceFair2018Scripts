@@ -49,6 +49,7 @@ class ManualSelection(QWidget):
     # Call various initialization functions
     def __init__(self):
 
+        # Call the QWidget initializer
         super(ManualSelection, self).__init__()
 
         # Check that the number of command line arguments is correct
