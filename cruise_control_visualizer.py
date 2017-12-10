@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 
 import math
-import random
 import sys
 
 from PyQt5.QtCore import QThread, pyqtSignal, Qt, QPoint
 from PyQt5.QtGui import QPainter
 from PyQt5.QtWidgets import QWidget, QApplication
-from sweeppy import Sample
 
 from automatic_cruise_control import automatic_cruise_control
 
@@ -19,7 +17,7 @@ from automatic_cruise_control import automatic_cruise_control
 WINDOW_SIDE_LENGTH = 600
 
 # Scaling factor for mapping distances from the LIDAR sensor onto the screen, in pixels per centimeter
-DISTANCE_SCALING_FACTOR = 0.05
+DISTANCE_SCALING_FACTOR = 0.5
 
 # Diameter of the sample points drawn in the window
 SAMPLE_POINT_DIAMETER = 3
@@ -40,7 +38,7 @@ class CruiseControlVisualizer(QWidget):
         # Connect the data signal to the UI update function in the main thread
         data_thread.data_signal.connect(self.update_ui)
         # Start the data thread
-        # data_thread.start()
+        data_thread.start()
 
         # Initialize the user interface
         self.init_ui()
@@ -56,38 +54,29 @@ class CruiseControlVisualizer(QWidget):
 
     # Update the user interface using data retrieved from the data thread
     def update_ui(self, data):
-        # Unwrap the data tuple
-        speed, samples = data
-        # Temporarily create a random speed and sample
-        speed = random.random() / 2
-        samples = []
-        for _ in range(25):
-            samples.append(Sample(
-                angle=random.randint(0, 360000),
-                distance=random.randint(2000, 4000),
-                signal_strength=random.randint(0, 255)
-            ))
-        samples.sort(key=lambda x: x.angle)
-
         # Clear the global list of sample points
         self.sample_points = []
 
-        # Iterate over the samples
-        for sample in samples:
-            # On the circle centered at the origin with length of the distance multiplied by the scaling factor,
-            # find the point corresponding to the angle
-            # Do this with sine and cosine operations to calculate the corresponding point on the unit circle
-            # and multiply that by the distance and the scaling factor
-            # Finally, add half of the window's side length to center the points in the window
-            sample_point = [
-                (trig_function(math.radians(sample.angle))
-                 * sample.distance
-                 * DISTANCE_SCALING_FACTOR)
-                + (WINDOW_SIDE_LENGTH / 2)
-                for trig_function in (math.cos, math.sin)
-            ]
-            # Add the point to the global list
-            self.sample_points.append(sample_point)
+        # Unwrap the data tuple
+        speed, samples = data
+        # If there is a valid list of samples
+        if samples is not None:
+            # Iterate over the samples
+            for sample in samples:
+                # On the circle centered at the origin with length of the distance multiplied by the scaling factor,
+                # find the point corresponding to the angle
+                # Do this with sine and cosine operations to calculate the corresponding point on the unit circle
+                # and multiply that by the distance and the scaling factor
+                # Finally, add half of the window's side length to center the points in the window
+                sample_point = [
+                    (trig_function(math.radians(sample.angle))
+                     * sample.distance
+                     * DISTANCE_SCALING_FACTOR)
+                    + (WINDOW_SIDE_LENGTH / 2)
+                    for trig_function in (math.cos, math.sin)
+                ]
+                # Add the point to the global list
+                self.sample_points.append(sample_point)
 
         # Redraw the window
         self.repaint()

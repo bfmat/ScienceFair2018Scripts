@@ -52,6 +52,9 @@ def automatic_cruise_control():
                         # Set the closest distance to the current one
                         closest_distance_within_search_angle = distance
 
+            # If no points were found, return None
+            yield None, None
+
             # If the distance to the car ahead is greater than the distance at which we need to go slowly
             # or it is 1 centimeter, which represents a distance larger than that which can be measured
             if closest_distance_within_search_angle > 500 or closest_distance_within_search_angle == 1:
