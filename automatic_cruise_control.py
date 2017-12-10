@@ -10,7 +10,7 @@ LIDAR_DEVICE_PATH = '/dev/cu.usbserial-DM00KERB'
 FULL_ROTATION_ANGLE = 360 * 1000
 
 # The angle in millidegrees away from the center within which a vehicle ahead is searched for
-SEARCH_ANGLE = 5000
+SEARCH_ANGLE = 10000
 
 # The speed to travel at if there is no vehicle ahead within a certain range
 DEFAULT_SPEED = 0.5
