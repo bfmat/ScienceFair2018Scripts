@@ -4,7 +4,7 @@ import math
 import sys
 
 from PyQt5.QtCore import QThread, pyqtSignal, Qt, QPoint
-from PyQt5.QtGui import QPainter
+from PyQt5.QtGui import QColor, QPainter, QPalette
 from PyQt5.QtWidgets import QWidget, QApplication
 
 from automatic_cruise_control import automatic_cruise_control
@@ -48,6 +48,10 @@ class CruiseControlVisualizer(QWidget):
         # Set the window's size and title
         self.setFixedSize(WINDOW_SIDE_LENGTH, WINDOW_SIDE_LENGTH)
         self.setWindowTitle('Cruise Control Visualizer')
+        # Use a dark blue background
+        palette = QPalette()
+        palette.setColor(QPalette.Background, QColor(0x000040))
+        self.setPalette(palette)
         # Display the window on screen
         self.show()
         self.update_ui((None, None))
@@ -69,7 +73,7 @@ class CruiseControlVisualizer(QWidget):
                 # and multiply that by the distance and the scaling factor
                 # Finally, add half of the window's side length to center the points in the window
                 sample_point = [
-                    (trig_function(math.radians(sample.angle))
+                    (trig_function(math.radians(sample.angle / 1000))
                      * sample.distance
                      * DISTANCE_SCALING_FACTOR)
                     + (WINDOW_SIDE_LENGTH / 2)

@@ -53,37 +53,39 @@ def automatic_cruise_control():
                         closest_distance_within_search_angle = distance
 
             # If no points were found, return None
-            yield None, None
-
-            # If the distance to the car ahead is greater than the distance at which we need to go slowly
-            # or it is 1 centimeter, which represents a distance larger than that which can be measured
-            if closest_distance_within_search_angle > 500 or closest_distance_within_search_angle == 1:
-                # Set the speed to the default cruising speed
-                speed = DEFAULT_SPEED
-
-            # If it is within the range at which is should stop
-            elif closest_distance_within_search_angle <= STOP_RANGE:
-                # Set the speed to zero
-                speed = 0
-
-            # Otherwise, the vehicle ahead is far enough away that we don't have to stop,
-            # but close enough that we must slow down
+            if closest_distance_within_search_angle is None:
+                yield None, None
+            # Otherwise, continue calculating the speed
             else:
-                # We need to linearly interpolate the speed between the cruising speed and zero
-                # Calculate how far we are away from having to stop
-                distance_past_stop_range = closest_distance_within_search_angle - STOP_RANGE
+                # If the distance to the car ahead is greater than the distance at which we need to go slowly
+                # or it is 1 centimeter, which represents a distance larger than that which can be measured
+                if closest_distance_within_search_angle > 500 or closest_distance_within_search_angle == 1:
+                    # Set the speed to the default cruising speed
+                    speed = DEFAULT_SPEED
 
-                # Calculate the distance between the upper bound of the slow range and the upper bound of the stop range
-                # This is the range within which we will interpolate the speed
-                interpolation_range = SLOW_RANGE - STOP_RANGE
+                # If it is within the range at which is should stop
+                elif closest_distance_within_search_angle <= STOP_RANGE:
+                    # Set the speed to zero
+                    speed = 0
 
-                # Calculate the value by which we will interpolate by dividing the current distance past the stop range
-                # by the range between the upper bound of the stop range and the slow range
-                interpolation_value = distance_past_stop_range / interpolation_range
+                # Otherwise, the vehicle ahead is far enough away that we don't have to stop,
+                # but close enough that we must slow down
+                else:
+                    # We need to linearly interpolate the speed between the cruising speed and zero
+                    # Calculate how far we are away from having to stop
+                    distance_past_stop_range = closest_distance_within_search_angle - STOP_RANGE
 
-                # Get the speed by multiplying the interpolation value by the default cruising speed
-                # This is equivalent to linear interpolation because the lower bound is always going to be zero
-                speed = interpolation_value * DEFAULT_SPEED
+                    # Calculate the distance between the upper bound of the slow range and the stop range
+                    # This is the range within which we will interpolate the speed
+                    interpolation_range = SLOW_RANGE - STOP_RANGE
 
-            # Yield the speed and the list of samples to whatever is iterating over this generator
-            yield speed, scan.samples
+                    # Calculate the value by which we will interpolate by dividing the current distance past the stop
+                    # range by the range between the upper bound of the stop range and the slow range
+                    interpolation_value = distance_past_stop_range / interpolation_range
+
+                    # Get the speed by multiplying the interpolation value by the default cruising speed
+                    # This is equivalent to linear interpolation because the lower bound is always going to be zero
+                    speed = interpolation_value * DEFAULT_SPEED
+
+                # Yield the speed and the list of samples to whatever is iterating over this generator
+                yield speed, scan.samples
