@@ -7,7 +7,7 @@ from PyQt5.QtCore import QThread, pyqtSignal, Qt, QPoint, QPointF
 from PyQt5.QtGui import QColor, QPainter, QPalette, QPolygon
 from PyQt5.QtWidgets import QWidget, QApplication
 
-from automatic_cruise_control import automatic_cruise_control, SEARCH_ANGLE
+from cruise_control.automatic_cruise_control import automatic_cruise_control, SEARCH_ANGLE
 
 # A visualization tool for the cruise control system that displays the environmental point map on screen and the
 # calculated speed of the vehicle
@@ -17,7 +17,7 @@ from automatic_cruise_control import automatic_cruise_control, SEARCH_ANGLE
 WINDOW_SIDE_LENGTH = 700
 
 # Scaling factor for mapping distances from the LIDAR sensor onto the screen, in pixels per centimeter
-DISTANCE_SCALING_FACTOR = 0.5
+DISTANCE_SCALING_FACTOR = 0.05
 
 # Diameter of the sample points drawn in the window
 SAMPLE_POINT_DIAMETER = 3
