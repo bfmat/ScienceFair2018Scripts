@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
 import math
+import os
 import sys
 
 from PyQt5.QtCore import QThread, pyqtSignal, Qt, QPoint, QPointF
-from PyQt5.QtGui import QColor, QPainter, QPalette, QPolygon
-from PyQt5.QtWidgets import QWidget, QApplication
+from PyQt5.QtGui import QColor, QPainter, QPalette, QPolygon, QPixmap
+from PyQt5.QtWidgets import QWidget, QApplication, QLabel
 
 from cruise_control.automatic_cruise_control import automatic_cruise_control, SEARCH_ANGLE
 
@@ -30,6 +31,9 @@ class CruiseControlVisualizer(QWidget):
 
     # The triangle that will be displayed on screen to mark the edges of the search range
     triangle = None
+
+    # The QLabel containing the red ar that will be moved depending on the proximity of objects to the LIDAR
+    red_car_label = None
 
     # Prepare the UI and data thread and run the main loop
     def __init__(self):
@@ -78,6 +82,29 @@ class CruiseControlVisualizer(QWidget):
             triangle_vertices.append(triangle_vertex)
         # Create a polygon out of the vertices
         self.triangle = QPolygon(triangle_vertices)
+
+        # Get the resource directory by referencing the subdirectory of the script directory
+        resource_directory = os.path.dirname(__file__) + '/resources/'
+
+        # A list of QImages that will be created with the images loaded from the resource directory
+        pixmaps = []
+        # For the names of each of the two car images
+        for image_name in ('blue_car.png', 'red_car.png'):
+            # Compose the full path of the image using the resource directory
+            image_path = resource_directory + image_name
+            # Load a QPixmap from the image path
+            pixmap = QPixmap(image_path)
+            # Add it to the list
+            pixmaps.append(pixmap)
+        # Get the individual red and blue car QPixmap from the list
+        blue_car_pixmap, red_car_pixmap = pixmaps
+
+        # Create a QLabel to contain the blue car image and position it so that the horizontal center
+        # of the top of the image is at the exact center of the window
+        blue_car_label = QLabel()
+        blue_car_label.setFixedSize(blue_car_pixmap.width(), blue_car_pixmap.height())
+        blue_car_label.setPixmap(blue_car_pixmap)
+        blue_car_label.move(WINDOW_SIDE_LENGTH / 2, WINDOW_SIDE_LENGTH / 2)
 
         # Display the window on screen
         self.show()
