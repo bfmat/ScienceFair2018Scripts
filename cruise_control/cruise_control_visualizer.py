@@ -4,9 +4,11 @@ import math
 import os
 import sys
 
-from PyQt5.QtCore import QThread, pyqtSignal, Qt, QPoint, QPointF
-from PyQt5.QtGui import QColor, QPainter, QPalette, QPolygon, QPixmap
+from PyQt5.QtCore import QThread, pyqtSignal, QPoint, QPointF, Qt
+from PyQt5.QtGui import QImage, QPixmap, QPalette, QColor, QPolygon, QPainter
 from PyQt5.QtWidgets import QWidget, QApplication, QLabel
+from skimage.io import imread
+from sweeppy import Sample
 
 from cruise_control.automatic_cruise_control import automatic_cruise_control, SEARCH_ANGLE
 
@@ -16,6 +18,12 @@ from cruise_control.automatic_cruise_control import automatic_cruise_control, SE
 
 # Side length of the square visualizer window
 WINDOW_SIDE_LENGTH = 700
+
+# Center of the visualizer window in either dimension
+WINDOW_CENTER = WINDOW_SIDE_LENGTH / 2
+
+# Side length of the square car images displayed on screen
+CAR_SPRITE_SIDE_LENGTH = 100
 
 # Scaling factor for mapping distances from the LIDAR sensor onto the screen, in pixels per centimeter
 DISTANCE_SCALING_FACTOR = 0.05
@@ -86,59 +94,70 @@ class CruiseControlVisualizer(QWidget):
         # Get the resource directory by referencing the subdirectory of the script directory
         resource_directory = os.path.dirname(__file__) + '/resources/'
 
-        # A list of QImages that will be created with the images loaded from the resource directory
-        pixmaps = []
+        # A list of QLabels containing the label for each of the car images
+        labels = []
         # For the names of each of the two car images
         for image_name in ('blue_car.png', 'red_car.png'):
-            # Compose the full path of the image using the resource directory
-            image_path = resource_directory + image_name
-            # Load a QPixmap from the image path
-            pixmap = QPixmap(image_path)
-            # Add it to the list
-            pixmaps.append(pixmap)
-        # Get the individual red and blue car QPixmap from the list
-        blue_car_pixmap, red_car_pixmap = pixmaps
+            # Load the image from the resource directory
+            image = imread(resource_directory + image_name)
+            # Calculate the bytes in every line of the image
+            height, width, channel = image.shape
+            bytes_per_line = channel * width
+            # Create a QImage out of the NumPy array
+            qimage = QImage(image.data, width, height, bytes_per_line, QImage.Format_RGBA8888)
+            # Create a QPixmap out of the QImage
+            pixmap = QPixmap(qimage).scaled(CAR_SPRITE_SIDE_LENGTH, CAR_SPRITE_SIDE_LENGTH)
+            # Create a QLabel that contains the image and is properly sized
+            label = QLabel(self)
+            label.setFixedSize(CAR_SPRITE_SIDE_LENGTH, CAR_SPRITE_SIDE_LENGTH)
+            label.setPixmap(pixmap)
+            # Add the label to the list
+            labels.append(label)
 
-        # Create a QLabel to contain the blue car image and position it so that the horizontal center
-        # of the top of the image is at the exact center of the window
-        blue_car_label = QLabel()
-        blue_car_label.setFixedSize(blue_car_pixmap.width(), blue_car_pixmap.height())
-        blue_car_label.setPixmap(blue_car_pixmap)
-        blue_car_label.move(WINDOW_SIDE_LENGTH / 2, WINDOW_SIDE_LENGTH / 2)
+        # Get the individual red and blue labels out of the list, making the red car a global variable
+        blue_car_label, self.red_car_label = labels
+        # Position the blue car label so that the center of the top of the image is at the exact center of the window
+        blue_car_label.move(WINDOW_CENTER - (blue_car_label.width() / 2), WINDOW_CENTER)
 
         # Display the window on screen
         self.show()
-        self.update_ui((None, None))
 
     # Update the user interface using data retrieved from the data thread
     def update_ui(self, data):
         # Clear the global list of sample points
         self.sample_points = []
 
-        # Unwrap the data tuple
-        speed, samples = data
-        # If there is a valid list of samples
-        if samples is not None:
+        # If valid data has been returned
+        if data[0] is not None:
+            # Unwrap the data tuple
+            speed, closest_distance_within_search_angle, samples = data
+
             # Iterate over the samples
             for sample in samples:
-                # Convert the angle in the sample to a vector on the unit circle
-                unit_circle_vector = self.angle_to_point_on_unit_circle(sample.angle)
-                # Scale the vector so that it is the same length as the distance of the sample, convert its elements
-                # to integers, and make it into a QPoint
-                scaled_vector_integer = [int(round(dimension * sample.distance)) for dimension in unit_circle_vector]
-                scaled_vector_qpoint = QPoint(*scaled_vector_integer)
-                # Offset the point so that its origin is halfway across the window in both dimensions
-                half_window_side_length = WINDOW_SIDE_LENGTH / 2
-                sample_point = scaled_vector_qpoint + (QPoint(half_window_side_length, half_window_side_length))
+                # Calculate a point in the window based on the sample
+                sample_point = self.sample_to_point_on_window(sample)
                 # Add the point to the global list
                 self.sample_points.append(sample_point)
+
+            # Create a sample using the closest distance and an angle of zero
+            closest_distance_sample = Sample(
+                angle=0,
+                distance=closest_distance_within_search_angle,
+                signal_strength=255
+            )
+            # Convert the sample to a point in the window
+            closest_distance_point = self.sample_to_point_on_window(closest_distance_sample)
+            # Subtract half of the width of the red car from the X value of this point
+            # to align the nose of the car with the closest sample point
+            red_car_position = closest_distance_point - QPoint(self.red_car_label.width() / 2, 0)
+            # Set the car's position accordingly
+            self.red_car_label.move(red_car_position)
 
         # Redraw the window
         self.repaint()
 
     # Called when the window is redrawn and used to display all of the sample points on the window
     def paintEvent(self, _):
-
         # Create a painter and begin painting
         painter = QPainter()
         painter.begin(self)
@@ -170,6 +189,18 @@ class CruiseControlVisualizer(QWidget):
                          for trig_function in (math.sin, lambda x: -math.cos(x))]
         # Convert the list to a tuple and return it
         return tuple(point_as_list)
+
+    # A function to convert a sample into a corresponding point around the center of the window
+    @staticmethod
+    def sample_to_point_on_window(sample):
+        # Convert the angle in the sample to a vector on the unit circle
+        unit_circle_vector = CruiseControlVisualizer.angle_to_point_on_unit_circle(sample.angle)
+        # Scale the vector so that it is the same length as the distance of the sample, convert its elements
+        # to integers, and make it into a QPoint
+        scaled_vector_integer = [int(round(dimension * sample.distance)) for dimension in unit_circle_vector]
+        scaled_vector_qpoint = QPoint(*scaled_vector_integer)
+        # Offset the point so that its origin is halfway across the window in both dimensions and return it
+        return scaled_vector_qpoint + (QPoint(WINDOW_CENTER, WINDOW_CENTER))
 
 
 # The data thread that runs forever, accepting values from the LIDAR and displaying them on screen

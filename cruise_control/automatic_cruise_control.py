@@ -54,7 +54,7 @@ def automatic_cruise_control():
 
             # If no points were found, return None
             if closest_distance_within_search_angle is None:
-                yield None, None
+                yield (None,)
             # Otherwise, continue calculating the speed
             else:
                 # If the distance to the car ahead is greater than the distance at which we need to go slowly
@@ -88,4 +88,4 @@ def automatic_cruise_control():
                     speed = interpolation_value * DEFAULT_SPEED
 
                 # Yield the speed and the list of samples to whatever is iterating over this generator
-                yield speed, scan.samples
+                yield speed, closest_distance_within_search_angle, scan.samples
