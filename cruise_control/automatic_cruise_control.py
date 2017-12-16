@@ -49,8 +49,10 @@ def automatic_cruise_control():
                 if angle <= SEARCH_ANGLE or angle >= FULL_ROTATION_ANGLE - SEARCH_ANGLE:
                     # If either the distance has not been set or the current distance is less than the least one so far
                     if closest_distance_within_search_angle is None or distance < closest_distance_within_search_angle:
-                        # Set the closest distance to the current one
-                        closest_distance_within_search_angle = distance
+                        # If the distance is not 1 (that is, it is not infinite)
+                        if distance != 1:
+                            # Set the closest distance to the current one
+                            closest_distance_within_search_angle = distance
 
             # If no points were found, return None
             if closest_distance_within_search_angle is None:

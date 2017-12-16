@@ -147,9 +147,10 @@ class CruiseControlVisualizer(QWidget):
             )
             # Convert the sample to a point in the window
             closest_distance_point = self.sample_to_point_on_window(closest_distance_sample)
-            # Subtract half of the width of the red car from the X value of this point
-            # to align the nose of the car with the closest sample point
-            red_car_position = closest_distance_point - QPoint(self.red_car_label.width() / 2, 0)
+            # Subtract half of the width of the red car from the X value of this point and subtract the full height of
+            # the car from the Y value to align the nose of the car with the closest sample point
+            red_car_position = closest_distance_point - QPoint(self.red_car_label.width() / 2,
+                                                               self.red_car_label.width())
             # Set the car's position accordingly
             self.red_car_label.move(red_car_position)
 
