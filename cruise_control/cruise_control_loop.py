@@ -13,7 +13,7 @@ FULL_ROTATION_ANGLE = 360 * 1000
 SEARCH_ANGLE = 10000
 
 # The minimum distance in centimeters to the car ahead at which the vehicle will enable the accelerator
-ACCELERATE_RANGE_CENTIMETERS = 400
+ACCELERATE_RANGE_CENTIMETERS = 100
 
 
 # Main generator that runs forever
@@ -50,7 +50,7 @@ def automatic_cruise_control():
 
             # If no points were found, return None
             if closest_distance_within_search_angle is None:
-                yield (None,)
+                yield (None,) * 3
             # Otherwise, continue calculating the speed
             else:
 
