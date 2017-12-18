@@ -130,7 +130,7 @@ class CruiseControlVisualizer(QWidget):
         # If valid data has been returned
         if data[0] is not None:
             # Unwrap the data tuple
-            speed, closest_distance_within_search_angle, samples = data
+            accelerate, closest_distance_within_search_angle, samples = data
 
             # Iterate over the samples
             for sample in samples:

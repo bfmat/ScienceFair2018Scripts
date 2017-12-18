@@ -12,14 +12,8 @@ FULL_ROTATION_ANGLE = 360 * 1000
 # The angle in millidegrees away from the center within which a vehicle ahead is searched for
 SEARCH_ANGLE = 10000
 
-# The speed to travel at if there is no vehicle ahead within a certain range
-DEFAULT_SPEED = 0.5
-
-# The distance to the vehicle ahead at which the car begins to slow down
-SLOW_RANGE = 1000
-
-# The distance to the vehicle ahead at which the car stops completely
-STOP_RANGE = 400
+# The minimum distance in centimeters to the car ahead at which the vehicle will enable the accelerator
+ACCELERATE_RANGE_CENTIMETERS = 400
 
 
 # Main generator that runs forever
@@ -59,35 +53,13 @@ def automatic_cruise_control():
                 yield (None,)
             # Otherwise, continue calculating the speed
             else:
-                # If the distance to the car ahead is greater than the distance at which we need to go slowly
-                # or it is 1 centimeter, which represents a distance larger than that which can be measured
-                if closest_distance_within_search_angle > 500 or closest_distance_within_search_angle == 1:
-                    # Set the speed to the default cruising speed
-                    speed = DEFAULT_SPEED
 
-                # If it is within the range at which is should stop
-                elif closest_distance_within_search_angle <= STOP_RANGE:
-                    # Set the speed to zero
-                    speed = 0
-
-                # Otherwise, the vehicle ahead is far enough away that we don't have to stop,
-                # but close enough that we must slow down
+                # If the closest distance is less than the predefined range, the vehicle should stop
+                if closest_distance_within_search_angle < ACCELERATE_RANGE_CENTIMETERS:
+                    accelerate = False
+                # Otherwise, enable the accelerator
                 else:
-                    # We need to linearly interpolate the speed between the cruising speed and zero
-                    # Calculate how far we are away from having to stop
-                    distance_past_stop_range = closest_distance_within_search_angle - STOP_RANGE
-
-                    # Calculate the distance between the upper bound of the slow range and the stop range
-                    # This is the range within which we will interpolate the speed
-                    interpolation_range = SLOW_RANGE - STOP_RANGE
-
-                    # Calculate the value by which we will interpolate by dividing the current distance past the stop
-                    # range by the range between the upper bound of the stop range and the slow range
-                    interpolation_value = distance_past_stop_range / interpolation_range
-
-                    # Get the speed by multiplying the interpolation value by the default cruising speed
-                    # This is equivalent to linear interpolation because the lower bound is always going to be zero
-                    speed = interpolation_value * DEFAULT_SPEED
+                    accelerate = True
 
                 # Yield the speed and the list of samples to whatever is iterating over this generator
-                yield speed, closest_distance_within_search_angle, scan.samples
+                yield accelerate, closest_distance_within_search_angle, scan.samples
