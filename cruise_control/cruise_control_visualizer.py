@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import QWidget, QApplication, QLabel
 from skimage.io import imread
 from sweeppy import Sample
 
-from cruise_control.automatic_cruise_control import automatic_cruise_control, SEARCH_ANGLE
+from cruise_control.automatic_cruise_loop import automatic_cruise_control, SEARCH_ANGLE
 
 # A visualization tool for the cruise control system that displays the environmental point map on screen and the
 # calculated speed of the vehicle
