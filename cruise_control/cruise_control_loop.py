@@ -13,7 +13,7 @@ FULL_ROTATION_ANGLE = 360 * 1000
 SEARCH_ANGLE = 10000
 
 # The minimum distance in centimeters to the car ahead at which the vehicle will enable the accelerator
-ACCELERATE_RANGE_CENTIMETERS = 100
+ACCELERATE_RANGE_CENTIMETERS = 40
 
 
 # Main generator that runs forever
