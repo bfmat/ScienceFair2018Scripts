@@ -12,3 +12,6 @@ python2 -m LaneDetection.apply.simulation_stream \
 
 # Run the stop sign finding script in the foreground
 python3 -m StopSignFinder.infer ~/Developer/Models/StopSignModels/Initial.h5
+
+# When the foreground process is interrupted, kill the background process
+pkill Python
