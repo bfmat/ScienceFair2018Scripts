@@ -8,4 +8,7 @@ cd ~/Developer
 
 # Run the driving script in the background (the path is hardcoded for my system)
 python2 -m LaneDetection.apply.simulation_stream \
-~/Developer/TrainedModels/batch=1513889469-epoch=10-val_loss=0.086984.h5 &
+~/Developer/Models/TrainedModels/batch=1513889469-epoch=10-val_loss=0.086984.h5 &
+
+# Run the stop sign finding script in the foreground
+python3 -m StopSignFinder.infer ~/Developer/Models/StopSignModels/Initial.h5
