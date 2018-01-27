@@ -14,4 +14,6 @@ python2 -m LaneDetection.apply.simulation_stream \
 python3 -m StopSignFinder.infer ~/Developer/Models/StopSignModels/TrainedWithNegative.h5
 
 # When the foreground process is interrupted, kill the background process
+# Different commands are used on macOS and Linux, so try both
 pkill Python
+pkill python
