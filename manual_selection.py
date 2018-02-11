@@ -16,7 +16,7 @@ from skimage.io import imread, imsave
 
 
 # Width of the window
-WINDOW_WIDTH = 960
+WINDOW_WIDTH = 1920
 
 # Height of output training images (width is the same as that of the input images)
 OUTPUT_HEIGHT = 16
