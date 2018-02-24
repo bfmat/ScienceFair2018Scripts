@@ -24,6 +24,8 @@ x_values, y_values = np.meshgrid(range(heat_map.shape[1]), range(heat_map.shape[
 # Get the Z values, which are the heat values at the X and Y positions
 z_values = heat_map[y_values, x_values]
 
+# Use the solarized light theme, which provides a nice sidebar to hold the color bar
+plt.style.use('Solarize_Light2')
 # Create a 3D figure with a specified title and plot the points
 fig = plt.figure('Heat Map Render')
 ax = Axes3D(fig)
@@ -42,8 +44,8 @@ surface = ax.plot_surface(
 ax.set_xlabel('X Position in Heat Map')
 ax.set_ylabel('Y Position in Heat Map')
 ax.set_zlabel('Total Output Activation')
-# Add a color bar to the figure that acts as a legend for the heat values, using a shrink of 0.5 so it doesn't take up
-# the entire window vertically, and a height to width ratio of 8 so it isn't too narrow
-fig.colorbar(surface, shrink=0.5, aspect=8)
+# Add a color bar to the figure that acts as a legend for the heat values, using a shrink of 0.75 so it doesn't take up
+# the entire window vertically, and a height to width ratio of 12 so it isn't too narrow
+fig.colorbar(surface, shrink=0.75, aspect=12)
 # Display the graph on screen
 plt.show()
