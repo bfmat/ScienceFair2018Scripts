@@ -12,6 +12,11 @@ from mpl_toolkits.mplot3d import Axes3D
 # where the middle is low because the network's responses are low, and the edges of the road are peaks
 # Created by brendon-ai, February 2018
 
+# Font sizes for the various parts of the UI
+TITLE_SIZE = 24
+AXIS_LABEL_SIZE = 16
+TICK_LABEL_SIZE = 12
+
 # Check that the number of command line arguments is correct
 if len(sys.argv) != 3:
     print('Usage:', sys.argv[0], '<left line heat map> <right line heat map>')
@@ -24,11 +29,17 @@ x_values, y_values = np.meshgrid(range(heat_map.shape[1]), range(heat_map.shape[
 # Get the Z values, which are the heat values at the X and Y positions
 z_values = heat_map[y_values, x_values]
 
-# Use the solarized light theme, which provides a nice sidebar to hold the color bar
-plt.style.use('Solarize_Light2')
-# Create a 3D figure with a specified title and plot the points
-fig = plt.figure('Heat Map Render')
+# Create a 3D figure with a specified title and size
+fig = plt.figure('Heat Map Render', figsize=(16, 12))
 ax = Axes3D(fig)
+# Set the tick font size
+plt.tick_params(labelsize=TICK_LABEL_SIZE)
+# Set the axis titles to describe their meaning
+ax.set_xlabel('X Position in Heat Map', fontsize=AXIS_LABEL_SIZE)
+ax.set_ylabel('Y Position in Heat Map', fontsize=AXIS_LABEL_SIZE)
+ax.set_zlabel('Total Output Activation', fontsize=AXIS_LABEL_SIZE)
+
+# Plot the points in 3D
 surface = ax.plot_surface(
     # Use the computed X, Y, and Z values
     X=x_values,
@@ -40,12 +51,11 @@ surface = ax.plot_surface(
     # Use heat map colors where red is at the top of the graph and blue is at the bottom
     cmap=cm.coolwarm
 )
-# Set the axis titles to describe their meaning
-ax.set_xlabel('X Position in Heat Map')
-ax.set_ylabel('Y Position in Heat Map')
-ax.set_zlabel('Total Output Activation')
+
 # Add a color bar to the figure that acts as a legend for the heat values, using a shrink of 0.75 so it doesn't take up
 # the entire window vertically, and a height to width ratio of 12 so it isn't too narrow
-fig.colorbar(surface, shrink=0.75, aspect=12)
+cbar = fig.colorbar(surface, shrink=0.75, aspect=12)
+# Set the font size of the ticks on the color bar
+cbar.ax.tick_params(labelsize=TICK_LABEL_SIZE)
 # Display the graph on screen
 plt.show()
