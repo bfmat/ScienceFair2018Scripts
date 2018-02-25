@@ -19,7 +19,7 @@ AXIS_LABEL_SIZE = 16
 TICK_LABEL_SIZE = 12
 
 # The stride with which the interpolation of the X and Y values is done
-INTERPOLATION_STRIDE = 0.2
+INTERPOLATION_STRIDE = 0.1
 
 # Check that the number of command line arguments is correct
 if len(sys.argv) != 3:
