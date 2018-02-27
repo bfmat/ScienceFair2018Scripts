@@ -9,18 +9,11 @@ from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.interpolate import griddata
 
+from graph_configuration import *
+
 # Load a heat map image for each road line, combine them, and render a 3D graph of the road that looks like a half pipe,
 # where the middle is low because the network's responses are low, and the edges of the road are peaks
 # Created by brendon-ai, February 2018
-
-# Font sizes for the various parts of the UI
-TITLE_SIZE = 24
-AXIS_LABEL_SIZE = 16
-TICK_LABEL_SIZE = 12
-
-# The amount by which the various labels should be separated from the plot and color bar
-TICK_LABEL_PADDING = 8
-AXIS_LABEL_PADDING = 16
 
 # The stride with which the interpolation of the X and Y values is done
 INTERPOLATION_STRIDE = 0.1
