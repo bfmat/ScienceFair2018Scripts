@@ -18,6 +18,10 @@ TITLE_SIZE = 24
 AXIS_LABEL_SIZE = 16
 TICK_LABEL_SIZE = 12
 
+# The amount by which the various labels should be separated from the plot and color bar
+TICK_LABEL_PADDING = 8
+AXIS_LABEL_PADDING = 16
+
 # The stride with which the interpolation of the X and Y values is done
 INTERPOLATION_STRIDE = 0.1
 
@@ -58,13 +62,14 @@ z_positions_interpolated = griddata(
 
 # Create a 3D figure with a specified title and size
 fig = plt.figure('Heat Map Render', figsize=(16, 12))
+fig.suptitle('Activation of Network Convolved Over Image', fontsize=TITLE_SIZE)
 ax = Axes3D(fig)
 # Set the tick font size
-plt.tick_params(labelsize=TICK_LABEL_SIZE)
+plt.tick_params(labelsize=TICK_LABEL_SIZE, pad=TICK_LABEL_PADDING)
 # Set the axis titles to describe their meaning
-ax.set_xlabel('X Position in Heat Map', fontsize=AXIS_LABEL_SIZE)
-ax.set_ylabel('Y Position in Heat Map', fontsize=AXIS_LABEL_SIZE)
-ax.set_zlabel('Total Output Activation', fontsize=AXIS_LABEL_SIZE)
+ax.set_xlabel('X Position in Heat Map', fontsize=AXIS_LABEL_SIZE, labelpad=AXIS_LABEL_PADDING)
+ax.set_ylabel('Y Position in Heat Map', fontsize=AXIS_LABEL_SIZE, labelpad=AXIS_LABEL_PADDING)
+ax.set_zlabel('Total Output Activation', fontsize=AXIS_LABEL_SIZE, labelpad=AXIS_LABEL_PADDING)
 
 # Plot the points in 3D
 surface = ax.plot_surface(
@@ -83,6 +88,6 @@ surface = ax.plot_surface(
 # the entire window vertically, and a height to width ratio of 12 so it isn't too narrow
 cbar = fig.colorbar(surface, shrink=0.75, aspect=12)
 # Set the font size of the ticks on the color bar
-cbar.ax.tick_params(labelsize=TICK_LABEL_SIZE)
+cbar.ax.tick_params(labelsize=TICK_LABEL_SIZE, pad=TICK_LABEL_PADDING)
 # Display the graph on screen
 plt.show()
