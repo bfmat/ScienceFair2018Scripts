@@ -5,6 +5,7 @@
 TITLE_SIZE = 24
 AXIS_LABEL_SIZE = 16
 TICK_LABEL_SIZE = 12
+LEGEND_SIZE = 14
 
 # The amount by which the various labels should be separated from the plot and color bar
 TICK_LABEL_PADDING = 8
