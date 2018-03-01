@@ -36,7 +36,7 @@ data_frame = pd.DataFrame.from_dict(values_by_trial)
 data_frame.index = trial_names
 
 # The width to make the bars for a single trial
-bar_width = 0.4
+bar_width = 0.3
 # Make the bars half as wide if there is only one series
 if num_series == 1:
     bar_width /= 2
@@ -50,7 +50,14 @@ fig.suptitle(input('Enter the graph title: '), fontsize=TITLE_SIZE)
 # Iterate over the subplots and corresponding series names, along with colors and positions for the graph
 for subplot, series_name, color, position in zip(subplots, data_frame.columns.values, COLORS, itertools.count()):
     # Graph the series on the subplot
-    data_frame[series_name].plot(kind='bar', color=color, ax=subplot, width=bar_width, position=position)
+    data_frame[series_name].plot(
+        kind='bar',
+        color=color,
+        ax=subplot,
+        width=bar_width,
+        position=position,
+        figsize=(24, 16)
+    )
     # Set the subplot's Y axis label with the series name
     subplot.set_ylabel(series_name, fontsize=AXIS_LABEL_SIZE, labelpad=AXIS_LABEL_PADDING)
     # Set the X axis label with a hardcoded value
