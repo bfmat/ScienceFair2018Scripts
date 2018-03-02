@@ -37,9 +37,9 @@ data_frame.index = trial_names
 
 # The width to make the bars for a single trial
 bar_width = 0.3
-# Make the bars half as wide if there is only one series
+# Make the bars twice as wide if there is only one series
 if num_series == 1:
-    bar_width /= 2
+    bar_width *= 2
 # Create a figure and add a subplot, duplicating its X axis into a different plot if there are two series
 fig = plt.figure('Trials Bar Graph')
 subplots = [fig.add_subplot(111)]
