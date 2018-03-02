@@ -27,7 +27,7 @@ for series_index in range(num_series):
     # Ask the user for the name of this data series
     series_name = input('Enter the name of data series {}: '.format(series_index))
     # Collect every data point in this series, each on a separate line
-    print('Enter the names of the {} data points, each on a separate line:'.format(num_trials))
+    print('Enter the {} data points, each on a separate line:'.format(num_trials))
     series_values = [float(input().strip()) for _ in range(num_trials)]
     # Add it to the dictionary under the corresponding trial name
     values_by_trial[series_name] = series_values
@@ -64,7 +64,8 @@ for subplot, series_name, color, position in zip(subplots, data_frame.columns.va
     subplot.set_xlabel('Trial', fontsize=AXIS_LABEL_SIZE, labelpad=AXIS_LABEL_PADDING)
     # Set the tick font size
     subplot.tick_params(labelsize=TICK_LABEL_SIZE, pad=TICK_LABEL_PADDING)
-# Automatically generate a legend for the graph
-fig.legend(fontsize=LEGEND_SIZE)
+# Automatically generate a legend for the graph if there is more than one data series
+if num_series > 1:
+    fig.legend(fontsize=LEGEND_SIZE)
 # Display the completed graph
 plt.show()
