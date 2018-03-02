@@ -2,7 +2,6 @@
 
 import itertools
 
-import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -43,9 +42,9 @@ if num_series == 1:
     bar_width /= 2
 # Create a figure and add a subplot, duplicating its X axis into a different plot if there are two series
 fig = plt.figure('Trials Bar Graph')
-subplots = [fig.add_subplot(111), None]
-# if num_series == 2:
-#     subplots.append(subplots[0].twinx())
+subplots = [fig.add_subplot(111)]
+if num_series == 2:
+    subplots.append(subplots[0].twinx())
 # Get a title for the figure and set it
 fig.suptitle(input('Enter the graph title: '), fontsize=TITLE_SIZE)
 # Iterate over the subplots and corresponding series names, along with colors and positions for the graph
@@ -54,21 +53,19 @@ for subplot, series_name, color, position in zip(subplots, data_frame.columns.va
     data_frame[series_name].plot(
         kind='bar',
         color=color,
-        ax=subplots[0],
+        ax=subplot,
         width=bar_width,
         position=position,
         figsize=(24, 16)
     )
     # Set the subplot's Y axis label with the series name
-    subplots[0].set_ylabel('Loss', fontsize=AXIS_LABEL_SIZE, labelpad=AXIS_LABEL_PADDING)
+    subplot.set_ylabel(series_name, fontsize=AXIS_LABEL_SIZE, labelpad=AXIS_LABEL_PADDING)
     # Set the X axis label with a hardcoded value
-    subplots[0].set_xlabel('Trial', fontsize=AXIS_LABEL_SIZE, labelpad=AXIS_LABEL_PADDING)
+    subplot.set_xlabel('Trial', fontsize=AXIS_LABEL_SIZE, labelpad=AXIS_LABEL_PADDING)
     # Set the tick font size
-    subplots[0].tick_params(labelsize=TICK_LABEL_SIZE, pad=TICK_LABEL_PADDING)
+    subplot.tick_params(labelsize=TICK_LABEL_SIZE, pad=TICK_LABEL_PADDING)
 # Automatically generate a legend for the graph if there is more than one data series
 if num_series > 1:
-    red_patch = mpatches.Patch(color='blue', label='Training Loss')
-    blue_patch = mpatches.Patch(color='red', label='Validation Loss')
-    fig.legend(handles=[red_patch, blue_patch], fontsize=LEGEND_SIZE)
+    fig.legend(fontsize=LEGEND_SIZE)
 # Display the completed graph
 plt.show()
