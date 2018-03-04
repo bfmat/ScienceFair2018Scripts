@@ -55,7 +55,7 @@ z_positions_interpolated = griddata(
 
 # Create a 3D figure with a specified title and size
 fig = plt.figure('Heat Map Render', figsize=(16, 12))
-fig.suptitle('Activation of Network Convolved Over Image', fontsize=TITLE_SIZE)
+fig.suptitle('CNN Activation Over Image of Road', fontsize=TITLE_SIZE)
 ax = Axes3D(fig)
 # Set the tick font size
 plt.tick_params(labelsize=TICK_LABEL_SIZE, pad=TICK_LABEL_PADDING)
