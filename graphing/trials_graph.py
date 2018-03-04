@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 
-import itertools
-
+import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
-import pandas as pd
 
 from graph_configuration import *
 
@@ -13,14 +11,16 @@ from graph_configuration import *
 # Colors to graph the two series in; if there is only one, the first color is used
 COLORS = ['red', 'blue']
 
+# Ask the user for the X axis label
+x_label = input('Enter the X axis label: ')
 # Get the number of trials, and the number of data series per trial, from the user
 num_trials = int(input('Enter the number of trials: '))
 num_series = 2 if input('Enter "y" if two data series are being used: ') == 'y' else 1
-# Get the names of the trials
-print('Enter the names of the {} trials, each on a separate line:'.format(num_trials))
-trial_names = [input().strip() for _ in range(num_trials)]
+# Get the numbers of the trials
+print('Enter the numbers of the {} trials, each on a separate line:'.format(num_trials))
+trial_numbers = [int(input().strip()) for _ in range(num_trials)]
 
-# Create a dictionary of the value lists for each series and an associated list for names of the series
+# Create a dictionary of the value lists for each series
 values_by_trial = {}
 # Iterate over the subplots and corresponding trial names
 for series_index in range(num_series):
@@ -31,41 +31,34 @@ for series_index in range(num_series):
     series_values = [float(input().strip()) for _ in range(num_trials)]
     # Add it to the dictionary under the corresponding trial name
     values_by_trial[series_name] = series_values
-# Create a data frame from the dictionary and set the row names to the trial names
-data_frame = pd.DataFrame.from_dict(values_by_trial)
-data_frame.index = trial_names
 
-# The width to make the bars for a single trial
-bar_width = 0.3
-# Make the bars twice as wide if there is only one series
-if num_series == 1:
-    bar_width *= 2
 # Create a figure and add a subplot, duplicating its X axis into a different plot if there are two series
-fig = plt.figure('Trials Bar Graph')
+fig = plt.figure('Trials Graph')
 subplots = [fig.add_subplot(111)]
 if num_series == 2:
     subplots.append(subplots[0].twinx())
 # Get a title for the figure and set it
 fig.suptitle(input('Enter the graph title: '), fontsize=TITLE_SIZE)
-# Iterate over the subplots and corresponding series names, along with colors and positions for the graph
-for subplot, series_name, color, position in zip(subplots, data_frame.columns.values, COLORS, itertools.count()):
-    # Graph the series on the subplot
-    data_frame[series_name].plot(
-        kind='bar',
+# Iterate over the subplots, series keys, and corresponding colors, creating a list of color handles
+color_handles = []
+for subplot, series_name, color in zip(subplots, values_by_trial.keys(), COLORS):
+    # Graph the series as a line with the provided trial numbers
+    subplot.plot(
+        trial_numbers,
+        values_by_trial[series_name],
         color=color,
-        ax=subplot,
-        width=bar_width,
-        position=position,
-        figsize=(24, 16)
+        label=series_name
     )
-    # Set the subplot's Y axis label with the series name
+    # Set the Y axis label with the series name
     subplot.set_ylabel(series_name, fontsize=AXIS_LABEL_SIZE, labelpad=AXIS_LABEL_PADDING)
-    # Set the X axis label with a hardcoded value
-    subplot.set_xlabel('Trial', fontsize=AXIS_LABEL_SIZE, labelpad=AXIS_LABEL_PADDING)
+    # Set the X axis label with the specified X axis label
+    subplot.set_xlabel(x_label, fontsize=AXIS_LABEL_SIZE, labelpad=AXIS_LABEL_PADDING)
     # Set the tick font size
     subplot.tick_params(labelsize=TICK_LABEL_SIZE, pad=TICK_LABEL_PADDING)
+    # Create a color handle for the legend
+    color_handles.append(mpatches.Patch(color=color, label=series_name))
 # Automatically generate a legend for the graph if there is more than one data series
 if num_series > 1:
-    fig.legend(fontsize=LEGEND_SIZE)
+    plt.legend(handles=color_handles, fontsize=LEGEND_SIZE)
 # Display the completed graph
 plt.show()
