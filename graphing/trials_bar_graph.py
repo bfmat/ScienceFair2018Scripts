@@ -61,7 +61,7 @@ for subplot, series_name, color, position in zip(subplots, data_frame.columns.va
     # Set the subplot's Y axis label with the series name
     subplot.set_ylabel(series_name, fontsize=AXIS_LABEL_SIZE, labelpad=AXIS_LABEL_PADDING)
     # Set the X axis label with a hardcoded value
-    subplot.set_xlabel('Epoch', fontsize=AXIS_LABEL_SIZE, labelpad=AXIS_LABEL_PADDING)
+    subplot.set_xlabel('Trial', fontsize=AXIS_LABEL_SIZE, labelpad=AXIS_LABEL_PADDING)
     # Set the tick font size
     subplot.tick_params(labelsize=TICK_LABEL_SIZE, pad=TICK_LABEL_PADDING)
 # Automatically generate a legend for the graph if there is more than one data series
