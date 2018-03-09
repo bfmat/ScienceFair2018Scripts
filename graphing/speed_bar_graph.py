@@ -16,18 +16,22 @@ SPEEDS = [5, 8, 12, 15]
 
 # A list of lists containing each of the data points arranged by speeds, where None is a failure
 DATA_POINTS_BY_SPEED = [
-    [40.4],
-    [44.5, 39.2, 44.6, None, 21.7, 20.6, None, None, 33.9, 21.4, 49.2, 22.6, 19.3, 18.4, 19.9, None, 19.4, 18.9, 23.6,
-     None, 34.4, 31.9, 16.9, None, 19.2, 17.4, 15.3],
-    [21.1, 20.2],
-    [None, 23.3, 18.2]
+    [0.434],
+    [0.337, 0.313, 0.375, None, 0.160, 0.179, None, None, 0.183, 0.147, 0.421, 0.173, 0.177, 0.135, 0.134, None, 0.198,
+     0.146, 0.177, None, 0.350, 0.273, 0.203, None, 0.112, 0.134, 0.168],
+    [0.179, 0.230],
+    [None, 0.167, 0.180]
 ]
 
 # Create a figure and set the window and graph titles
 plt.figure('Speed Bar Graph')
-plt.suptitle('Positional Standard Deviation by Trials and Speeds', fontsize=TITLE_SIZE)
+plt.suptitle('Angular Standard Deviation by Trials and Speeds', fontsize=TITLE_SIZE)
 # Set the subplot's X and Y axis labels
-plt.ylabel('Standard Deviation from Center of Image (Pixels)', fontsize=AXIS_LABEL_SIZE, labelpad=AXIS_LABEL_PADDING)
+plt.ylabel(
+    'Standard Deviation of Vehicle Orientation (Line Slope)',
+    fontsize=AXIS_LABEL_SIZE,
+    labelpad=AXIS_LABEL_PADDING
+)
 plt.xlabel('Trial', fontsize=AXIS_LABEL_SIZE, labelpad=AXIS_LABEL_PADDING)
 # Set the tick font size
 plt.tick_params(labelsize=TICK_LABEL_SIZE, pad=TICK_LABEL_PADDING)
@@ -57,8 +61,8 @@ for point, bar in zip(graph_points_unsorted, plt.gca().patches):
     # Get the X and Y positions of the center of the top of the bar
     x = bar.get_x() + (bar.get_width() / 2)
     y = bar.get_height()
-    # Draw a label at this point, substituting 0 with Fail
-    label_text = 'Fail' if point == 0 else point
+    # Draw a label at this point, substituting 0 with Fail, and cutting the numbers to 4 characters
+    label_text = 'Fail' if point == 0 else f'{point:.2f}'
     plt.text(x, y, label_text, ha='center', va='bottom')
 
 # Set up the legend and display the completed graph
