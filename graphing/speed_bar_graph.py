@@ -25,7 +25,7 @@ DATA_POINTS_BY_SPEED = [
 
 # Create a figure and set the window and graph titles
 plt.figure('Speed Bar Graph')
-plt.suptitle('PD Control Performance by Trials and Speeds', fontsize=TITLE_SIZE)
+plt.suptitle('Positional Standard Deviation by Trials and Speeds', fontsize=TITLE_SIZE)
 # Set the subplot's X and Y axis labels
 plt.ylabel('Standard Deviation from Center of Image (Pixels)', fontsize=AXIS_LABEL_SIZE, labelpad=AXIS_LABEL_PADDING)
 plt.xlabel('Trial', fontsize=AXIS_LABEL_SIZE, labelpad=AXIS_LABEL_PADDING)
