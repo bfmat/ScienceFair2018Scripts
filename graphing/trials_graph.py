@@ -57,6 +57,11 @@ for subplot, series_name, color in zip(subplots, values_by_trial.keys(), COLORS)
     subplot.tick_params(labelsize=TICK_LABEL_SIZE, pad=TICK_LABEL_PADDING)
     # Create a color handle for the legend
     color_handles.append(mpatches.Patch(color=color, label=series_name))
+
+# Put axis limits for the deep Q-network graph into place
+plt.xlim(xmin=0)
+plt.ylim(ymin=0, ymax=10000)
+
 # Automatically generate a legend for the graph if there is more than one data series
 if num_series > 1:
     plt.legend(handles=color_handles, fontsize=LEGEND_SIZE)
