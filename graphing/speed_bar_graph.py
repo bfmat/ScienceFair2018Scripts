@@ -16,19 +16,20 @@ SPEEDS = [5, 8, 12, 15]
 
 # A list of lists containing each of the data points arranged by speeds, where None is a failure
 DATA_POINTS_BY_SPEED = [
-    [0.434],
-    [0.337, 0.313, 0.375, None, 0.160, 0.179, None, None, 0.183, 0.147, 0.421, 0.173, 0.177, 0.135, 0.134, None, 0.198,
-     0.146, 0.177, None, 0.350, 0.273, 0.203, None, 0.112, 0.134, 0.168],
-    [0.179, 0.230],
-    [None, 0.167, 0.180]
+    [3.79],
+    [3.72, 4.23, 3.39, None, 3.63, 3.10, None, None, 1.95, 3.74, 3.77, 3.66, 26.81, 16.02,
+        9.76, None, 9.28, 16.05, 10.65, None, 10.92, 10.71, 10.38, 4.51, 10.18, 10.29, 10.27],
+    [9.71, 10.76],
+    [None, 9.44, 9.69]
 ]
 
 # Create a figure and set the window and graph titles
 plt.figure('Speed Bar Graph')
-plt.suptitle('Angular Standard Deviation by Trials and Speeds', fontsize=TITLE_SIZE)
+plt.suptitle('Frame Rate by Trials and Speeds',
+             fontsize=TITLE_SIZE)
 # Set the subplot's X and Y axis labels
 plt.ylabel(
-    'Standard Deviation of Vehicle Orientation (Line Slope)',
+    'Frame Rate (Frames per Second)',
     fontsize=AXIS_LABEL_SIZE,
     labelpad=AXIS_LABEL_PADDING
 )
@@ -54,7 +55,8 @@ for points, speed, color in zip(DATA_POINTS_BY_SPEED, SPEEDS, COLORS):
     # Add the same number of copies of the current color to the list of colors
     colors_for_data_points += [color] * len(points)
 # Graph these points and colors on the plot, numbered from 0 to one less than however many there are
-plt.bar(range(len(graph_points_unsorted)), graph_points_unsorted, color=colors_for_data_points)
+plt.bar(range(len(graph_points_unsorted)),
+        graph_points_unsorted, color=colors_for_data_points)
 
 # Iterate over the bars that were drawn, and the corresponding unsorted graph points, adding labels
 for point, bar in zip(graph_points_unsorted, plt.gca().patches):
